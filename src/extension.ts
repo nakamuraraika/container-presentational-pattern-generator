@@ -2,7 +2,7 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import * as path from 'path';
-import { generateFile, readTemplate, replaceVariables } from './generator';
+import { generateFile, replaceVariables } from './generator';
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -26,30 +26,9 @@ export function activate(context: vscode.ExtensionContext) {
 				return;
 			}
 			
+			generateFiles(uri.path, { component });
 
-
-			// ファイル名が入力されたら、ファイルを生成する
-			// container用のファイル設定
-			const containerFilename = vscode.workspace.getConfiguration('container-presentational-pattern-generator').get<string>('containerFilename') || '';
-			const containerTemplate = vscode.workspace.getConfiguration('container-presentational-pattern-generator').get<string>('containerTemplate') || '';
-
-			// presentational用のファイル設定
-			const presentationalFilename = vscode.workspace.getConfiguration('container-presentational-pattern-generator').get<string>('presentationalFilename') || '';
-			const presentationalTemplate = vscode.workspace.getConfiguration('container-presentational-pattern-generator').get<string>('presentationalTemplate') || '';
-
-			const containerContent = replaceVariables(containerTemplate, { component, presentational: presentationalFilename });
-			const presentationalContent = replaceVariables(presentationalTemplate, { component, presentational: presentationalFilename });
-
-			// ファイルを生成する
-			try {
-				await generateFile(`${uri.fsPath}/${containerFilename}.tsx`, containerContent);
-				await generateFile(`${uri.fsPath}/${presentationalFilename}.tsx`, presentationalContent);
-				// このプロジェクトのsrc/templates/container.tsx.tempを読み込む
-			} catch(err) {
-				vscode.window.showInformationMessage('error occured');
-			}
-			
-			// エクスプローラーを更新する
+			// 生成したファイルを表示させるため、エクスプローラを更新する
 			vscode.commands.executeCommand("workbench.files.action.refreshFilesExplorer");
 		});
 	});
@@ -59,3 +38,23 @@ export function activate(context: vscode.ExtensionContext) {
 
 // This method is called when your extension is deactivated
 export function deactivate() {}
+
+async function generateFiles(dirpath: string, options: { component: string }): Promise<void> {
+	// ファイル名が入力されたら、ファイルを生成する
+	// container用のファイル設定
+	const containerFilename = vscode.workspace.getConfiguration('container-presentational-pattern-generator').get<string>('containerFilename') || '';
+	const containerTemplate = vscode.workspace.getConfiguration('container-presentational-pattern-generator').get<string>('containerTemplate') || '';
+
+	// presentational用のファイル設定
+	const presentationalFilename = vscode.workspace.getConfiguration('container-presentational-pattern-generator').get<string>('presentationalFilename') || '';
+	const presentationalTemplate = vscode.workspace.getConfiguration('container-presentational-pattern-generator').get<string>('presentationalTemplate') || '';
+
+	const containerContent = replaceVariables(containerTemplate, { component: options.component, presentational: presentationalFilename });
+	const presentationalContent = replaceVariables(presentationalTemplate, { component: options.component, presentational: presentationalFilename });
+
+	// ファイルを生成する
+	const containerPromise = generateFile(`${dirpath}/${containerFilename}.tsx`, containerContent);
+	const presentationalPromise = generateFile(`${dirpath}/${presentationalFilename}.tsx`, presentationalContent);
+
+	await Promise.all([containerPromise, presentationalPromise]);
+}

@@ -17,13 +17,6 @@ export type Variables = {
 };
 
 /**
- * テンプレートファイルを読み込む
- */
-export function readTemplate(filepath: string): Promise<string> {
-    return fs.readFile(filepath, 'utf-8');
-}
-
-/**
  * テンプレートファイルの変数を置換する
  * %${key}% が ${value} に置換される
  */
