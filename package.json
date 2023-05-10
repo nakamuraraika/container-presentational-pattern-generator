@@ -1,0 +1,86 @@
+{
+  "name": "container-presentational-pattern-generator",
+  "displayName": "Container-Presentational Pattern Generator",
+  "description": "A code generator for container/presentational pattern",
+  "version": "0.0.3",
+  "engines": {
+    "vscode": "^1.75.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:container-presentational-pattern-generator:helloWorld",
+    "onCommand:container-presentational-pattern-generator:generatePresentationFile"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "container-presentational-pattern-generator.helloWorld",
+        "title": "Hello World"
+      },
+      {
+        "command": "container-presentational-pattern-generator.generatePresentationFile",
+        "title": "Generate Container/Presentational Files"
+      }
+    ],
+    "menus": {
+      "explorer/context": [
+        {
+          "command": "container-presentational-pattern-generator.generatePresentationFile",
+          "when": "explorerResourceIsFolder",
+          "group": "cppg@1"
+        }
+      ]
+    },
+    "configuration":[
+      {
+        "title": "Container/Presentational Pattern Generator",
+        "properties": {
+          "container-presentational-pattern-generator.containerFilename": {
+            "type": "string",
+            "default": "container",
+            "description": "The filename of container"
+          },
+          "container-presentational-pattern-generator.containerTemplate": {
+            "type": "string",
+            "default": "import { %component%Presenter } from './%presentational%';\n\nconst %component%: React.FC = () => {\n  return <%component%Presenter />\n};",
+            "description": "The template of container.tsx"
+          },
+          "container-presentational-pattern-generator.presentationalFilename": {
+            "type": "string",
+            "default": "presentational",
+            "description": "The filename of presentational"
+          },
+          "container-presentational-pattern-generator.presentationalTemplate": {
+            "type": "string",
+            "default": "\ntype Props = {\n\n};\n\nexport const %component%Presenter: React.FC<Props> = ({}) => {\n  return (\n    <>\n    </>\n  );\n};\n",
+            "description": "The template of presentational.tsx"
+          }
+        }
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.75.0",
+    "@types/glob": "^8.1.0",
+    "@types/mocha": "^10.0.1",
+    "@types/node": "16.x",
+    "@typescript-eslint/eslint-plugin": "^5.59.1",
+    "@typescript-eslint/parser": "^5.59.1",
+    "eslint": "^8.39.0",
+    "glob": "^8.1.0",
+    "mocha": "^10.2.0",
+    "typescript": "^5.0.4",
+    "@vscode/test-electron": "^2.3.0"
+  }
+}
