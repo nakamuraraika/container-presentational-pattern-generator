@@ -48,6 +48,9 @@ export function activate(context: vscode.ExtensionContext) {
 			} catch(err) {
 				vscode.window.showInformationMessage('error occured');
 			}
+			
+			// エクスプローラーを更新する
+			vscode.commands.executeCommand("workbench.files.action.refreshFilesExplorer");
 		});
 	});
 
