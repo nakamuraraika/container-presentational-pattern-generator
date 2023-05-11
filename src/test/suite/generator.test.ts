@@ -1,7 +1,6 @@
 
 import * as assert from 'assert';
-import * as vscode from 'vscode';
-import { readTemplate, replaceVariables } from '../../generator';
+import { replaceVariables } from '../../generator';
 
 suite('Generator Test Suite', () => {
 	// readTemplateのテスト
