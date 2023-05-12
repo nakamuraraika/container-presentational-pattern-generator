@@ -40,15 +40,10 @@ export function activate(context: vscode.ExtensionContext) {
 export function deactivate() {}
 
 async function generateFiles(dirpath: string, options: { component: string }): Promise<void> {
+
+	const { containerFilename, containerTemplate, presentationalFilename, presentationalTemplate } = loadConfigurations();
+
 	// ファイル名が入力されたら、ファイルを生成する
-	// container用のファイル設定
-	const containerFilename = vscode.workspace.getConfiguration('container-presentational-pattern-generator').get<string>('containerFilename') || '';
-	const containerTemplate = vscode.workspace.getConfiguration('container-presentational-pattern-generator').get<string>('containerTemplate') || '';
-
-	// presentational用のファイル設定
-	const presentationalFilename = vscode.workspace.getConfiguration('container-presentational-pattern-generator').get<string>('presentationalFilename') || '';
-	const presentationalTemplate = vscode.workspace.getConfiguration('container-presentational-pattern-generator').get<string>('presentationalTemplate') || '';
-
 	const containerContent = replaceVariables(containerTemplate, { component: options.component, presentational: presentationalFilename });
 	const presentationalContent = replaceVariables(presentationalTemplate, { component: options.component, presentational: presentationalFilename });
 
@@ -57,4 +52,22 @@ async function generateFiles(dirpath: string, options: { component: string }): P
 	const presentationalPromise = generateFile(`${dirpath}/${presentationalFilename}.tsx`, presentationalContent);
 
 	await Promise.all([containerPromise, presentationalPromise]);
+}
+
+// 設定を読み込む
+function loadConfigurations() {
+	// container用のファイル設定
+	const containerFilename = vscode.workspace.getConfiguration('container-presentational-pattern-generator').get<string>('containerFilename') || '';
+	const containerTemplate = vscode.workspace.getConfiguration('container-presentational-pattern-generator').get<string>('containerTemplate') || '';
+
+	// presentational用のファイル設定
+	const presentationalFilename = vscode.workspace.getConfiguration('container-presentational-pattern-generator').get<string>('presentationalFilename') || '';
+	const presentationalTemplate = vscode.workspace.getConfiguration('container-presentational-pattern-generator').get<string>('presentationalTemplate') || '';
+
+	return {
+		containerFilename,
+		containerTemplate,
+		presentationalFilename,
+		presentationalTemplate
+	};
 }
