@@ -56,13 +56,17 @@ async function generateFiles(dirpath: string, options: { component: string }): P
 
 // 設定を読み込む
 function loadConfigurations() {
+
+	// セクション名から設定を取得する
+	const config = vscode.workspace.getConfiguration('container-presentational-pattern-generator');
+
 	// container用のファイル設定
-	const containerFilename = vscode.workspace.getConfiguration('container-presentational-pattern-generator').get<string>('containerFilename') || '';
-	const containerTemplate = vscode.workspace.getConfiguration('container-presentational-pattern-generator').get<string>('containerTemplate') || '';
+	const containerFilename = config.get<string>('containerFilename') || '';
+	const containerTemplate = config.get<string>('containerTemplate') || '';
 
 	// presentational用のファイル設定
-	const presentationalFilename = vscode.workspace.getConfiguration('container-presentational-pattern-generator').get<string>('presentationalFilename') || '';
-	const presentationalTemplate = vscode.workspace.getConfiguration('container-presentational-pattern-generator').get<string>('presentationalTemplate') || '';
+	const presentationalFilename = config.get<string>('presentationalFilename') || '';
+	const presentationalTemplate = config.get<string>('presentationalTemplate') || '';
 
 	return {
 		containerFilename,
