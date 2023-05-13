@@ -26,7 +26,7 @@ export function activate(context: vscode.ExtensionContext) {
 				return;
 			}
 			
-			generateFiles(uri.path, { component });
+			await generateFiles(uri.path, { component });
 
 			// 生成したファイルを表示させるため、エクスプローラを更新する
 			vscode.commands.executeCommand("workbench.files.action.refreshFilesExplorer");
